@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Stream PHP</title>
+  </head>
+  <body style="overflow:hidden;margin:0;padding:0">
+    <div id="app">
+      <iframe
+        id="ifarm"
+        src=""
+        frameborder="0"
+        width="100%"
+        style="height:100vh;"
+      ></iframe>
+    </div>
+    <script>
+      // link tùy chỉnh
+      var url = "//localhost:3000/";
+
+      var hash = location.hash;
+      var ifarm = document.getElementById("ifarm");
+      hash = hash.slice(1);
+      hash = hash.split("?");
+      search = "";
+      if (hash.length == 2) {
+        search += "?" + hash[1];
+      }
+      ifarm.src = url + hash[0] + ".php" + search;
+      window.addEventListener(
+        "hashchange",
+        function() {
+          location.reload();
+        },
+        false
+      );
+      var eventMethod = window.addEventListener
+        ? "addEventListener"
+        : "attachEvent";
+      var eventer = window[eventMethod];
+      var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+      eventer(
+        messageEvent,
+        function(e) {
+          hash = e.data.split(".");
+          let pathname = hash[0].slice(1);
+          let search = hash[1].split("?");
+          let urlEd = "#" + pathname;
+          if (search.length == 2) {
+            urlEd += "?" + search[1];
+          }
+          history.pushState(null, "", urlEd);
+        },
+        false
+      );
+    </script>
+  </body>
+</html>
